@@ -14,14 +14,14 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install, build
+    - name: build frontend
       run: |
         cd tr3butor-frontend
         npm ci
         npm run build --if-present
       env:
         CI: true
-    - name: copy to server
+    - name: deploy frontend
       uses: easingthemes/ssh-deploy@main
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
@@ -30,3 +30,20 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: ${{ secrets.REMOTE_TARGET }}/test-front/
+    - name: build backend
+      run: |
+        cd ../tr3butor-backend
+        npm ci
+        npm run build --if-present
+      env:
+        CI: true
+    - name: deploy backend
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        ARGS: "-rltgoDzvO"
+        SOURCE: "tr3butor-backend/dist/"
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}/test-back/
+    
