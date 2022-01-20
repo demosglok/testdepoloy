@@ -32,7 +32,7 @@ jobs:
         TARGET: ${{ secrets.REMOTE_TARGET }}/test-front/
     - name: build backend
       run: |
-        cd ../tr3butor-backend
+        cd tr3butor-backend
         npm ci
         npm run build --if-present
       env:
